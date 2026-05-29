@@ -894,7 +894,7 @@ function doSearch() {
   if (!q) return;
   showLoading('Searching…');
   // POST to Power Automate with action=search
-  fetch(PA_TRIGGER_URL, { mode: 'no-cors',
+  fetch(PA_TRIGGER_URL, { 
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'search', query: q })
@@ -947,7 +947,7 @@ function clearSearch() {
 function loadOpportunity(oppid) {
   clearSearch();
   showLoading('Loading…');
-  fetch(PA_TRIGGER_URL, { mode: 'no-cors',
+  fetch(PA_TRIGGER_URL, { 
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', oppid })
@@ -1229,7 +1229,7 @@ function submitForm() {
   };
 
   showLoading('Saving…');
-  fetch(PA_TRIGGER_URL, { mode: 'no-cors',
+  fetch(PA_TRIGGER_URL, { 
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
