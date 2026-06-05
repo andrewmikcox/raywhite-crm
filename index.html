@@ -1174,6 +1174,7 @@ function cancelForm() {
 
 // ── SUBMIT ──
 function submitForm() {
+  console.log('submitForm called');
   // Validate required fields
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
@@ -1229,13 +1230,10 @@ function submitForm() {
     } : null
   };
 
+  console.log('Fetching:', PA_TRIGGER_URL);
   showLoading('Saving…');
-  fetch(PA_TRIGGER_URL, { 
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(() => {
+  fetch(PA_TRIGGER_URL, {
+
     hideLoading();
     showToast('✓ Opportunity saved', 'success');
     setTimeout(() => cancelForm(), 1500);
