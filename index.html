@@ -892,9 +892,9 @@ window.addEventListener('load', () => {
 function doSearch() {
   const q = document.getElementById('searchInput').value.trim();
   if (!q) return;
+  const ql = q.toLowerCase();
   showLoading('Searching…');
-  // POST to Power Automate with action=search
-  fetch(PA_TRIGGER_URL, { 
+  fetch(PA_TRIGGER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'search', query: q })
@@ -902,11 +902,24 @@ function doSearch() {
   .then(r => r.json())
   .then(data => {
     hideLoading();
-    renderSearchResults(data.results || []);
+    // PA returns raw contacts array — filter client-side
+    const all = Array.isArray(data) ? data : (data.value || data.results || []);
+    const filtered = all.filter(r => {
+      const name = (r['Display Name'] || r['name'] || '').toLowerCase();
+      const phone = (r['CleanPhone'] || r['phone'] || '');
+      const oppid = (r['OppID'] || r['oppid'] || '').toLowerCase();
+      return name.includes(ql) || phone.includes(q) || oppid.includes(ql);
+    }).map(r => ({
+      oppid: r['OppID'] || r['oppid'] || '',
+      name: r['Display Name'] || r['name'] || '',
+      phone: r['CleanPhone'] || r['phone'] || '',
+      suburb: r['Seller Suburb'] || r['suburb'] || '',
+      status: r['Status'] || r['status'] || 'Active'
+    }));
+    renderSearchResults(filtered);
   })
   .catch(() => {
     hideLoading();
-    // Demo mode — show mock results if PA not yet connected
     renderSearchResults(getMockResults(q));
   });
 }
