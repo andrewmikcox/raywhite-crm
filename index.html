@@ -858,7 +858,8 @@
 
 <script>
 // ── CONFIG ──
-const PA_TRIGGER_URL = 'https://defaultf52250b4f2fd4e40a014903b16965a.f5.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a56a8ce9d3b64b888da68c6a3b4d03c1/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sjQzuZM33WB0ZhTRTof1OutOesPaXJfK3Kgmn6LSFAw';
+const PA_BASE_URL = 'https://defaultf52250b4f2fd4e40a014903b16965a.f5.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a56a8ce9d3b64b888da68c6a3b4d03c1/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sjQzuZM33WB0ZhTRTof1OutOesPaXJfK3Kgmn6LSFAw';
+const PA_TRIGGER_URL = 'https://corsproxy.io/?' + encodeURIComponent(PA_BASE_URL);
 
 // Known NSW suburbs for validation (starter — expand with full table)
 const NSW_SUBURBS = [
