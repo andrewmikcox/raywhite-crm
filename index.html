@@ -473,7 +473,7 @@
   }
 </style>
 </head>
-<body data-pa-url="aHR0cHM6Ly9kZWZhdWx0ZjUyMjUwYjRmMmZkNGU0MGEwMTQ5MDNiMTY5NjVhLmY1LmVudmlyb25tZW50LmFwaS5wb3dlcnBsYXRmb3JtLmNvbTo0NDMvcG93ZXJhdXRvbWF0ZS9hdXRvbWF0aW9ucy9kaXJlY3Qvd29ya2Zsb3dzL2E1NmE4Y2U5ZDNiNjRiODg4ZGE2OGM2YTNiNGQwM2MxL3RyaWdnZXJzL21hbnVhbC9wYXRocy9pbnZva2U/YXBpLXZlcnNpb249MSZzcD0lMkZ0cmlnZ2VycyUyRm1hbnVhbCUyRnJ1biZzdj0xLjAmc2lnPXNqUXp1Wk0zM1dCMFpoVFJUb2YxT3V0T2VzUGFYSmZLM0tnbW42TFNGQXc=">
+<body>
 
 <!-- HEADER -->
 <div class="header">
@@ -858,8 +858,7 @@
 
 <script>
 // ── CONFIG ──
-const PA_BASE_URL = atob(document.body.dataset.paUrl);
-const PA_TRIGGER_URL = PA_BASE_URL;
+const PA_TRIGGER_URL = '/.netlify/functions/proxy';
 
 // Known NSW suburbs for validation (starter — expand with full table)
 const NSW_SUBURBS = [
