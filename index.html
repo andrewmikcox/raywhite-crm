@@ -859,7 +859,7 @@
 <script>
 // ── CONFIG ──
 const PA_BASE_URL = atob(document.body.dataset.paUrl);
-const PA_TRIGGER_URL = 'https://corsproxy.io/?' + encodeURIComponent(PA_BASE_URL);
+const PA_TRIGGER_URL = PA_BASE_URL;
 
 // Known NSW suburbs for validation (starter — expand with full table)
 const NSW_SUBURBS = [
