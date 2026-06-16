@@ -902,21 +902,51 @@ function doSearch() {
   .then(r => r.json())
   .then(data => {
     hideLoading();
-    // PA returns raw contacts array — filter client-side
-    const all = Array.isArray(data) ? data : (data.value || data.results || []);
-    const filtered = all.filter(r => {
-      const name = (r['Display Name'] || r['name'] || '').toLowerCase();
-      const phone = (r['CleanPhone'] || r['phone'] || '');
-      const oppid = (r['OppID'] || r['oppid'] || '').toLowerCase();
-      return name.includes(ql) || phone.includes(q) || oppid.includes(ql);
-    }).map(r => ({
-      oppid: r['OppID'] || r['oppid'] || '',
-      name: r['Display Name'] || r['name'] || '',
-      phone: r['CleanPhone'] || r['phone'] || '',
-      suburb: r['Seller Suburb'] || r['suburb'] || '',
-      status: r['Status'] || r['status'] || 'Active'
-    }));
-    renderSearchResults(filtered);
+    const contacts = data.contacts || [];
+    const opps = data.opps || [];
+    const matchedContacts = contacts.filter(c => {
+      const name = (c['Display Name'] || '').toLowerCase();
+      const phone = (c['CleanPhone'] || '');
+      return name.includes(ql) || phone.includes(q);
+    });
+    const results = [];
+    matchedContacts.forEach(c => {
+      const contactOpps = opps.filter(o => o['ContactID'] === c['ContactID']);
+      if (contactOpps.length > 0) {
+        contactOpps.forEach(o => {
+          results.push({
+            oppid: o['OppID'] || '',
+            name: c['Display Name'] || '',
+            phone: c['CleanPhone'] || '',
+            suburb: o['SellerSuburb'] || o['BuyerSuburb'] || '',
+            status: o['Status'] || 'Active'
+          });
+        });
+      } else {
+        results.push({
+          oppid: '',
+          contactid: c['ContactID'] || '',
+          name: c['Display Name'] || '',
+          phone: c['CleanPhone'] || '',
+          suburb: '',
+          status: 'No opportunity'
+        });
+      }
+    });
+    const oppMatches = opps.filter(o => (o['OppID'] || '').toLowerCase().includes(ql));
+    oppMatches.forEach(o => {
+      if (!results.find(r => r.oppid === o['OppID'])) {
+        const c = contacts.find(c => c['ContactID'] === o['ContactID']) || {};
+        results.push({
+          oppid: o['OppID'] || '',
+          name: c['Display Name'] || o['ContactID'] || '',
+          phone: c['CleanPhone'] || '',
+          suburb: o['SellerSuburb'] || o['BuyerSuburb'] || '',
+          status: o['Status'] || 'Active'
+        });
+      }
+    });
+    renderSearchResults(results);
   })
   .catch(() => {
     hideLoading();
