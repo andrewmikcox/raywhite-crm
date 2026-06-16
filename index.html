@@ -939,7 +939,7 @@ function doSearch() {
         const c = contacts.find(c => c['ContactID'] === o['ContactID']) || {};
         results.push({
           oppid: o['OppID'] || '',
-          name: c['Display Name'] || o['ContactID'] || '',
+          name: c['Display Name'] || 'Unknown',
           phone: c['CleanPhone'] || '',
           suburb: o['SellerSuburb'] || o['BuyerSuburb'] || '',
           status: o['Status'] || 'Active'
