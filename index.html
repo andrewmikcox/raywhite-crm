@@ -960,19 +960,59 @@ function clearSearch() {
 function loadOpportunity(oppid) {
   clearSearch();
   showLoading('Loading…');
-  fetch(PA_TRIGGER_URL, { 
+  fetch(PA_TRIGGER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', oppid })
   })
   .then(r => r.json())
-  .then(data => {
+  .then(raw => {
     hideLoading();
-    populateForm(data, oppid, false);
+    const c = raw.contact || {};
+    const o = raw.opp || {};
+    const mapped = {
+      firstName: c['First Name'] || '',
+      lastName: c['Last Name'] || '',
+      phone: c['CleanPhone'] || '',
+      email: c['Email'] || '',
+      source: c['Source'] || 'Webform',
+      tags: c['Tags'] || '',
+      status: o['Status'] || 'Active',
+      hasSeller: !!(o['SellerSuburb'] || o['SellerPropertyAddress']),
+      sellerAddress: o['SellerPropertyAddress'] || '',
+      sellerSuburb: o['SellerSuburb'] || '',
+      sellerPostcode: '',
+      sellerPropertyType: o['SellerPropertyType'] || '',
+      sellerTimeline: o['SellerTimeline'] || '',
+      sellerPrice: o['SellerPriceMax'] || o['SellerPriceMin'] || '',
+      sellerMotivation: o['SellerMotivation'] || '',
+      sellerActionItems: o['ActionItems'] || '',
+      hasBuyer: !!(o['BuyerSuburb'] || o['BuyerBudgetMax']),
+      buyerSuburbs: o['BuyerSuburb'] ? o['BuyerSuburb'].split(',').map(s => s.trim()).filter(Boolean) : [],
+      buyerPropertyType: o['BuyerPropertyType'] || '',
+      buyerTimeline: o['BuyerTimeline'] || '',
+      buyerBeds: parseInt(o['BuyerBedrooms']) || 3,
+      buyerBaths: parseInt(o['BuyerBathrooms']) || 2,
+      buyerParking: parseInt(o['BuyerParkingMin']) || 1,
+      buyerBudgetMin: o['BuyerBudgetMin'] || '',
+      buyerBudgetMax: o['BuyerBudgetMax'] || '',
+      buyerFinanceStatus: o['BuyerFinanceStatus'] || '',
+      buyerPreApprovalAmount: o['BuyerPreApprovalAmount'] || '',
+      buyerPreApprovalExpiry: o['BuyerPreApprovalExpiry'] || '',
+      buyerBrokerEngaged: o['BuyerBrokerEngaged'] === 'true' || o['BuyerBrokerEngaged'] === true,
+      buyerMotivation: o['BuyerMotivation'] || '',
+      buyerSchoolZone: o['BuyerSchoolZone'] || '',
+      buyerLandSize: o['BuyerLandSizeMin'] || '',
+      buyerPropertyStyle: o['BuyerPropertyStyle'] || '',
+      buyerZoning: o['BuyerZoningRequirements'] || '',
+      buyerDevPotential: o['BuyerDevelopmentPotential'] || '',
+      buyerLiveability: o['BuyerLiveabilityBand'] || '',
+      buyerNotes: ''
+    };
+    populateForm(mapped, oppid, false);
   })
   .catch(() => {
     hideLoading();
-    // Demo mode
     populateForm(getMockRecord(oppid), oppid, false);
   });
 }
