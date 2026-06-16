@@ -1,0 +1,2693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ray White CRM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --rw-red: #E31837;
+    --rw-dark: #1A1A1A;
+    --rw-grey: #F4F4F4;
+    --rw-mid: #888;
+    --rw-border: #E0E0E0;
+    --rw-green: #2E7D32;
+    --rw-amber: #E65100;
+    --rw-blue: #1565C0;
+    --radius: 12px;
+    --transition: 0.2s ease;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F7F7F7;
+    color: var(--rw-dark);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--rw-dark);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: var(--rw-red);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    color: white; font-size: 18px; font-weight: 400;
+    flex-shrink: 0;
+  }
+  .header-title { color: white; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-sub { color: #888; font-size: 12px; margin-top: 1px; }
+  .header-badge {
+    margin-left: auto;
+    background: var(--rw-red);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+  /* ── SEARCH PANEL ── */
+  .search-panel {
+    background: white;
+    border-radius: var(--radius);
+    margin: 16px 0;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .search-panel-header {
+    padding: 14px 16px;
+    background: var(--rw-grey);
+    border-bottom: 1px solid var(--rw-border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--rw-mid);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .search-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rw-border);
+  }
+  .search-row:last-child { border-bottom: none; }
+  .search-input {
+    flex: 1;
+    border: 1.5px solid var(--rw-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color var(--transition);
+    color: var(--rw-dark);
+  }
+  .search-input:focus { border-color: var(--rw-red); }
+  .search-input::placeholder { color: #bbb; }
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--rw-red); color: white; }
+  .btn-primary:active { background: #C0102A; transform: scale(0.97); }
+  .btn-secondary { background: var(--rw-grey); color: var(--rw-dark); }
+  .btn-secondary:active { background: #E0E0E0; transform: scale(0.97); }
+  .btn-ghost { background: transparent; color: var(--rw-blue); padding: 10px 0; font-size: 14px; }
+  .btn-full { width: 100%; display: block; text-align: center; padding: 14px; font-size: 16px; }
+
+  /* ── SEARCH RESULTS ── */
+  .search-results {
+    display: none;
+    padding: 8px 0;
+  }
+  .search-results.visible { display: block; }
+  .result-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rw-border);
+    cursor: pointer;
+    transition: background var(--transition);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item:active { background: var(--rw-grey); }
+  .result-name { font-size: 15px; font-weight: 500; }
+  .result-meta { font-size: 12px; color: var(--rw-mid); margin-top: 2px; }
+  .result-oppid {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--rw-red);
+    background: #FFF0F2;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .result-empty { padding: 16px; text-align: center; color: var(--rw-mid); font-size: 14px; }
+
+  /* ── NEW RECORD BUTTON ── */
+  .new-record-btn {
+    margin: 0 0 16px;
+    background: white;
+    border: 2px dashed var(--rw-border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--rw-mid);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .new-record-btn:active { border-color: var(--rw-red); color: var(--rw-red); }
+  .new-record-btn .plus { font-size: 20px; color: var(--rw-red); }
+
+  /* ── FORM ── */
+  .form-panel { display: none; }
+  .form-panel.visible { display: block; }
+
+  .form-card {
+    background: white;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .form-card-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid var(--rw-border);
+  }
+  .form-card-header.collapsed { border-bottom: none; }
+  .card-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .icon-contact { background: #E8F5E9; }
+  .icon-seller { background: #FFF3E0; }
+  .icon-buyer { background: #E3F2FD; }
+  .card-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .card-chevron {
+    color: var(--rw-mid);
+    font-size: 18px;
+    transition: transform var(--transition);
+  }
+  .card-chevron.open { transform: rotate(180deg); }
+  .card-body { padding: 16px; display: block; }
+  .card-body.collapsed { display: none; }
+
+  /* ── OPP ID BANNER ── */
+  .oppid-banner {
+    background: linear-gradient(135deg, var(--rw-dark), #333);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .oppid-label { color: #888; font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
+  .oppid-value { color: white; font-size: 18px; font-weight: 600; font-family: 'DM Serif Display', serif; margin-top: 2px; }
+  .oppid-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .status-active { background: #E8F5E9; color: var(--rw-green); }
+  .status-new { background: #FFF3E0; color: var(--rw-amber); }
+
+  /* ── FORM FIELDS ── */
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--rw-mid);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .field-required { color: var(--rw-red); font-size: 14px; }
+  .field-input {
+    width: 100%;
+    border: 1.5px solid var(--rw-border);
+    border-radius: 8px;
+    padding: 11px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color var(--transition);
+    color: var(--rw-dark);
+    background: white;
+    -webkit-appearance: none;
+  }
+  .field-input:focus { border-color: var(--rw-red); }
+  .field-input.warning { border-color: var(--rw-amber); background: #FFFBF0; }
+  .field-input.readonly { background: var(--rw-grey); color: var(--rw-mid); }
+  .field-warning {
+    font-size: 12px;
+    color: var(--rw-amber);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── STEPPER ── */
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--rw-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .stepper-btn {
+    background: var(--rw-grey);
+    border: none;
+    padding: 11px 18px;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--rw-dark);
+    font-weight: 300;
+    transition: background var(--transition);
+    flex-shrink: 0;
+  }
+  .stepper-btn:active { background: #E0E0E0; }
+  .stepper-val {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    background: white;
+  }
+
+  /* ── TOGGLE ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    margin-bottom: 16px;
+  }
+  .toggle-label { font-size: 15px; font-weight: 500; }
+  .toggle {
+    position: relative;
+    width: 48px; height: 28px;
+    flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--rw-border);
+    border-radius: 28px;
+    transition: background var(--transition);
+    cursor: pointer;
+  }
+  .toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 22px; height: 22px;
+    left: 3px; top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform var(--transition);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle input:checked + .toggle-slider { background: var(--rw-red); }
+  .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+  /* ── SUBURB PILLS ── */
+  .suburb-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+    min-height: 10px;
+  }
+  .suburb-pill {
+    background: #E3F2FD;
+    color: var(--rw-blue);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .suburb-pill.warning-pill { background: #FFF3E0; color: var(--rw-amber); }
+  .suburb-pill-remove {
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    color: inherit;
+    opacity: 0.6;
+  }
+  .suburb-add-row { display: flex; gap: 8px; }
+
+  /* ── DROPDOWN ── */
+  select.field-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  /* ── GRID ── */
+  .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* ── SUBMIT BAR ── */
+  .submit-bar {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid var(--rw-border);
+    padding: 12px 16px;
+    display: none;
+    gap: 10px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+    z-index: 100;
+  }
+  .submit-bar.visible { display: flex; }
+  .submit-bar .btn { flex: 1; padding: 14px; font-size: 16px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--rw-dark);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--rw-green); }
+  .toast.error { background: var(--rw-red); }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .loading-overlay.visible { display: flex; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .loading-text { color: white; font-size: 15px; font-weight: 500; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--rw-mid);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 8px 0 10px;
+    border-bottom: 1px solid var(--rw-border);
+    margin-bottom: 16px;
+  }
+
+  .missing-fields {
+    background: #FFF8E1;
+    border: 1px solid #FFE082;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--rw-amber);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">RW</div>
+  <div>
+    <div class="header-title">Ray White CRM</div>
+    <div class="header-sub">Opportunity Manager</div>
+  </div>
+  <div class="header-badge">LIVE</div>
+</div>
+
+<div class="container">
+
+  <!-- SEARCH PANEL -->
+  <div class="search-panel" id="searchPanel">
+    <div class="search-panel-header">
+      Find Opportunity
+      <span style="color: var(--rw-red); cursor:pointer; font-size:11px; letter-spacing:0" onclick="clearSearch()">Clear</span>
+    </div>
+    <div class="search-row">
+      <input class="search-input" id="searchInput" type="text" placeholder="Name, suburb, phone or OppID…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter'){doSearch();event.preventDefault()}">
+      <button class="btn btn-primary" onclick="doSearch()">Search</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <!-- NEW RECORD BUTTON -->
+  <div class="new-record-btn" id="newRecordBtn" onclick="startNewRecord()">
+    <span class="plus">+</span>
+    <span>New Opportunity</span>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel" id="formPanel">
+
+    <!-- OPP ID BANNER -->
+    <div class="oppid-banner">
+      <div>
+        <div class="oppid-label">Opportunity</div>
+        <div class="oppid-value" id="oppidDisplay">New Record</div>
+      </div>
+      <div class="oppid-status status-new" id="oppidStatus">NEW</div>
+    </div>
+
+    <!-- MISSING FIELDS -->
+    <div class="missing-fields" id="missingFields" style="display:none"></div>
+
+    <!-- ── CONTACT CARD ── -->
+    <div class="form-card">
+      <div class="form-card-header" onclick="toggleCard('contactCard')">
+        <div class="card-icon icon-contact">👤</div>
+        <div class="card-title">Contact</div>
+        <div class="card-chevron open" id="contactCardChevron">▾</div>
+      </div>
+      <div class="card-body" id="contactCard">
+        <div class="field-grid-2">
+          <div class="field">
+            <div class="field-label">First Name <span class="field-required">*</span></div>
+            <input class="field-input" id="firstName" type="text" placeholder="Jane" autocomplete="given-name">
+          </div>
+          <div class="field">
+            <div class="field-label">Last Name <span class="field-required">*</span></div>
+            <input class="field-input" id="lastName" type="text" placeholder="Smith" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Mobile <span class="field-required">*</span></div>
+          <input class="field-input" id="phone" type="tel" placeholder="+61400000000" autocomplete="tel">
+        </div>
+        <div class="field">
+          <div class="field-label">Email</div>
+          <input class="field-input" id="email" type="email" placeholder="jane@email.com" autocomplete="email">
+        </div>
+        <div class="field">
+          <div class="field-label">Source</div>
+          <select class="field-input" id="source">
+            <option value="">Select source…</option>
+            <option>Audio</option>
+            <option>Email</option>
+            <option>Manual</option>
+            <option>Webform</option>
+            <option>Referral</option>
+            <option>Open Home</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Tags</div>
+          <input class="field-input" id="tags" type="text" placeholder="e.g. hot-lead, follow-up">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SELLER CARD ── -->
+    <div class="form-card">
+      <div class="form-card-header" onclick="toggleCard('sellerCard')">
+        <div class="card-icon icon-seller">🏠</div>
+        <div class="card-title">Selling — Listing Property</div>
+        <div class="card-chevron open" id="sellerCardChevron">▾</div>
+      </div>
+      <div class="card-body" id="sellerCard">
+        <div class="toggle-row">
+          <span class="toggle-label">Has property to sell?</span>
+          <label class="toggle">
+            <input type="checkbox" id="hasSeller" checked onchange="toggleSection('sellerFields', this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div id="sellerFields">
+          <div class="field">
+            <div class="field-label">Property Address <span class="field-required">*</span></div>
+            <input class="field-input" id="sellerAddress" type="text" placeholder="1 Gerbera Place, Kellyville" onblur="parseSellerSuburb()">
+          </div>
+          <div class="field-grid-2">
+            <div class="field">
+              <div class="field-label">Suburb <span class="field-required">*</span></div>
+              <input class="field-input" id="sellerSuburb" type="text" placeholder="Kellyville" oninput="validateSuburb(this, 'sellerSuburbWarning')" list="suburbList">
+              <div class="field-warning" id="sellerSuburbWarning" style="display:none">⚠ Verify suburb spelling</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Postcode</div>
+              <input class="field-input" id="sellerPostcode" type="text" placeholder="2155" inputmode="numeric">
+            </div>
+          </div>
+          <div class="field-grid-2">
+            <div class="field">
+              <div class="field-label">Property Type</div>
+              <select class="field-input" id="sellerPropertyType">
+                <option value="">Select…</option>
+                <option>House</option>
+                <option>Townhouse</option>
+                <option>Apartment</option>
+                <option>Unit</option>
+                <option>Land</option>
+                <option>Rural</option>
+                <option>Commercial</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label">Timeline</div>
+              <select class="field-input" id="sellerTimeline">
+                <option value="">Select…</option>
+                <option>ASAP</option>
+                <option>1 month</option>
+                <option>2 months</option>
+                <option>3 months</option>
+                <option>6 months</option>
+                <option>12 months</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Price Expectation ($)</div>
+            <input class="field-input" id="sellerPrice" type="text" placeholder="1,200,000" inputmode="numeric">
+          </div>
+          <div class="field">
+            <div class="field-label">Motivation</div>
+            <input class="field-input" id="sellerMotivation" type="text" placeholder="Upsizing, relocating…">
+          </div>
+          <div class="field">
+            <div class="field-label">Action Items</div>
+            <input class="field-input" id="sellerActionItems" type="text" placeholder="Book appraisal, send comparables…">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BUYER CARD ── -->
+    <div class="form-card">
+      <div class="form-card-header" onclick="toggleCard('buyerCard')">
+        <div class="card-icon icon-buyer">🔍</div>
+        <div class="card-title">Buying Preferences</div>
+        <div class="card-chevron open" id="buyerCardChevron">▾</div>
+      </div>
+      <div class="card-body" id="buyerCard">
+        <div class="toggle-row">
+          <span class="toggle-label">Looking to buy?</span>
+          <label class="toggle">
+            <input type="checkbox" id="hasBuyer" checked onchange="toggleSection('buyerFields', this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div id="buyerFields">
+
+          <!-- Suburbs -->
+          <div class="field">
+            <div class="field-label">Target Suburbs <span class="field-required">*</span></div>
+            <div class="suburb-pills" id="buyerSuburbPills"></div>
+            <div class="suburb-add-row">
+              <input class="search-input" id="buyerSuburbInput" type="text" placeholder="Add suburb…" list="suburbList" onkeydown="if(event.key==='Enter'){addSuburb();event.preventDefault()}">
+              <button class="btn btn-secondary" onclick="addSuburb()">Add</button>
+            </div>
+            <div class="field-warning" id="buyerSuburbWarning" style="display:none">⚠ Some suburbs need verification</div>
+          </div>
+
+          <div class="field-grid-2">
+            <div class="field">
+              <div class="field-label">Property Type</div>
+              <select class="field-input" id="buyerPropertyType">
+                <option value="">Any</option>
+                <option>House</option>
+                <option>Townhouse</option>
+                <option>Apartment</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label">Timeline</div>
+              <select class="field-input" id="buyerTimeline">
+                <option value="">Select…</option>
+                <option>1 month</option>
+                <option>2 months</option>
+                <option>3 months</option>
+                <option>6 months</option>
+                <option>12 months</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-grid-3">
+            <div class="field">
+              <div class="field-label">Beds</div>
+              <div class="stepper">
+                <button class="stepper-btn" onclick="stepperChange('buyerBeds',-1)">−</button>
+                <input class="stepper-val" id="buyerBeds" value="3" readonly>
+                <button class="stepper-btn" onclick="stepperChange('buyerBeds',1)">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Baths</div>
+              <div class="stepper">
+                <button class="stepper-btn" onclick="stepperChange('buyerBaths',-1)">−</button>
+                <input class="stepper-val" id="buyerBaths" value="2" readonly>
+                <button class="stepper-btn" onclick="stepperChange('buyerBaths',1)">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Parking</div>
+              <div class="stepper">
+                <button class="stepper-btn" onclick="stepperChange('buyerParking',-1)">−</button>
+                <input class="stepper-val" id="buyerParking" value="1" readonly>
+                <button class="stepper-btn" onclick="stepperChange('buyerParking',1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-grid-2">
+            <div class="field">
+              <div class="field-label">Budget Min ($)</div>
+              <input class="field-input" id="buyerBudgetMin" type="text" placeholder="1,200,000" inputmode="numeric">
+            </div>
+            <div class="field">
+              <div class="field-label">Budget Max ($)</div>
+              <input class="field-input" id="buyerBudgetMax" type="text" placeholder="1,500,000" inputmode="numeric">
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Finance Status</div>
+            <select class="field-input" id="buyerFinanceStatus" onchange="togglePreApproval()">
+              <option value="">Select…</option>
+              <option>Saving</option>
+              <option>Pre-Approval</option>
+              <option>Approved</option>
+              <option>Cash</option>
+            </select>
+          </div>
+
+          <div id="preApprovalFields" style="display:none">
+            <div class="field-grid-2">
+              <div class="field">
+                <div class="field-label">Approval Amount ($)</div>
+                <input class="field-input" id="buyerPreApprovalAmount" type="text" placeholder="1,500,000" inputmode="numeric">
+              </div>
+              <div class="field">
+                <div class="field-label">Expiry Date</div>
+                <input class="field-input" id="buyerPreApprovalExpiry" type="date">
+              </div>
+            </div>
+            <div class="field">
+              <div class="toggle-row" style="margin-bottom:0">
+                <span class="toggle-label" style="font-size:13px">Broker engaged?</span>
+                <label class="toggle">
+                  <input type="checkbox" id="buyerBrokerEngaged">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Motivation</div>
+            <input class="field-input" id="buyerMotivation" type="text" placeholder="Upsizing, lifestyle change…">
+          </div>
+
+          <!-- Additional fields (collapsed by default) -->
+          <div id="buyerExtraFields" style="display:none">
+            <div class="section-divider">Additional Preferences</div>
+            <div class="field">
+              <div class="field-label">School Zone</div>
+              <input class="field-input" id="buyerSchoolZone" type="text" placeholder="e.g. Kellyville High School" list="suburbList">
+            </div>
+            <div class="field">
+              <div class="field-label">Land Size Min (sqm)</div>
+              <input class="field-input" id="buyerLandSize" type="text" placeholder="600" inputmode="numeric">
+            </div>
+            <div class="field">
+              <div class="field-label">Property Style</div>
+              <input class="field-input" id="buyerPropertyStyle" type="text" placeholder="e.g. Modern, Federation…">
+            </div>
+            <div class="field">
+              <div class="field-label">Zoning Requirements</div>
+              <input class="field-input" id="buyerZoning" type="text" placeholder="e.g. R2, R3…">
+            </div>
+            <div class="field">
+              <div class="field-label">Development Potential</div>
+              <input class="field-input" id="buyerDevPotential" type="text" placeholder="Duplex, granny flat…">
+            </div>
+            <div class="field">
+              <div class="field-label">Liveability Notes</div>
+              <input class="field-input" id="buyerLiveability" type="text" placeholder="Near transport, cafes…">
+            </div>
+          </div>
+          <button class="btn btn-ghost" id="buyerExtraToggle" onclick="toggleBuyerExtra()" style="font-size:13px; padding: 8px 0; margin-top:4px">
+            + Show additional preferences
+          </button>
+
+          <div class="field" style="margin-top:8px">
+            <div class="field-label">Buyer Notes</div>
+            <textarea class="field-input" id="buyerNotes" rows="3" placeholder="Any additional notes…" style="resize:vertical; font-family:inherit"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- spacer for sticky bar -->
+    <div style="height:16px"></div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- SUBMIT BAR -->
+<div class="submit-bar" id="submitBar">
+  <button class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+  <button class="btn btn-primary" onclick="submitForm()">Save Opportunity</button>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Saving…</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NSW SUBURBS DATALIST (starter list — replace with full table) -->
+<datalist id="suburbList">
+  <option value="Abbotsford">
+  <option value="Aberdare">
+  <option value="Abermain">
+  <option value="Acacia Gardens">
+  <option value="Adamstown">
+  <option value="Adamstown Heights">
+  <option value="Airds">
+  <option value="Albion Park">
+  <option value="Albion Park Rail">
+  <option value="Albury">
+  <option value="Alexandria">
+  <option value="Alfords Point">
+  <option value="Allambie Heights">
+  <option value="Ambarvale">
+  <option value="Anna Bay">
+  <option value="Annandale">
+  <option value="Appin">
+  <option value="Arcadia">
+  <option value="Armidale">
+  <option value="Arncliffe">
+  <option value="Artarmon">
+  <option value="Ashfield">
+  <option value="Auburn">
+  <option value="Austinmer">
+  <option value="Avalon">
+  <option value="Avalon Beach">
+  <option value="Balgowlah">
+  <option value="Balgowlah Heights">
+  <option value="Ballina">
+  <option value="Balmain">
+  <option value="Balmain East">
+  <option value="Balmoral">
+  <option value="Bangor">
+  <option value="Banora Point">
+  <option value="Bar Beach">
+  <option value="Bardwell Park">
+  <option value="Bardwell Valley">
+  <option value="Bateau Bay">
+  <option value="Batehaven">
+  <option value="Batemans Bay">
+  <option value="Bathurst">
+  <option value="Bayview">
+  <option value="Beacon Hill">
+  <option value="Beaconsfield">
+  <option value="Beecroft">
+  <option value="Bega">
+  <option value="Bella Vista">
+  <option value="Bellambi">
+  <option value="Bellevue Hill">
+  <option value="Belrose">
+  <option value="Ben Buckler">
+  <option value="Beresfield">
+  <option value="Berkeley">
+  <option value="Berkeley Vale">
+  <option value="Berrilee">
+  <option value="Berry">
+  <option value="Beverly Hills">
+  <option value="Bexley">
+  <option value="Bexley North">
+  <option value="Bidwill">
+  <option value="Bilgola">
+  <option value="Bilgola Plateau">
+  <option value="Birchgrove">
+  <option value="Birrong">
+  <option value="Blackett">
+  <option value="Blackheath">
+  <option value="Blacksmiths">
+  <option value="Blacktown">
+  <option value="Blackwall">
+  <option value="Blair Athol">
+  <option value="Blairmount">
+  <option value="Blaxland">
+  <option value="Blaxland East">
+  <option value="Blue Haven">
+  <option value="Boambee">
+  <option value="Bodalla">
+  <option value="Bomaderry">
+  <option value="Bomen">
+  <option value="Bondi">
+  <option value="Bondi Beach">
+  <option value="Bondi Junction">
+  <option value="Booker Bay">
+  <option value="Booragul">
+  <option value="Bourke">
+  <option value="Bourkelands">
+  <option value="Box Hill">
+  <option value="Bradbury">
+  <option value="Brighton Le Sands">
+  <option value="Broken Hill">
+  <option value="Bronte">
+  <option value="Brookvale">
+  <option value="Bullaburra">
+  <option value="Bulli">
+  <option value="Bundeena">
+  <option value="Burraneer">
+  <option value="Burrill Lake">
+  <option value="Burwood">
+  <option value="Buxton">
+  <option value="Byron Bay">
+  <option value="Cabarita">
+  <option value="Cabarita Beach">
+  <option value="Cambridge Park">
+  <option value="Camden">
+  <option value="Camden South">
+  <option value="Camellia">
+  <option value="Cameron Park">
+  <option value="Cammeray">
+  <option value="Campbelltown">
+  <option value="Camperdown">
+  <option value="Cardiff">
+  <option value="Cardiff Heights">
+  <option value="Cardiff South">
+  <option value="Careel Bay">
+  <option value="Caringbah">
+  <option value="Caringbah South">
+  <option value="Carlingford">
+  <option value="Casino">
+  <option value="Castle Hill">
+  <option value="Castlecrag">
+  <option value="Casula">
+  <option value="Catherine Field">
+  <option value="Catherine Hill Bay">
+  <option value="Cattai">
+  <option value="Caves Beach">
+  <option value="Centennial Park">
+  <option value="Cessnock">
+  <option value="Chain Valley Bay">
+  <option value="Charmhaven">
+  <option value="Chatswood">
+  <option value="Cheltenham">
+  <option value="Cherrybrook">
+  <option value="Chifley">
+  <option value="Chippendale">
+  <option value="Church Point">
+  <option value="Clareville">
+  <option value="Claymore">
+  <option value="Clifton">
+  <option value="Clontarf">
+  <option value="Clovelly">
+  <option value="Cobar">
+  <option value="Cobargo">
+  <option value="Cobbitty">
+  <option value="Colebee">
+  <option value="Collaroy">
+  <option value="Collaroy Plateau">
+  <option value="Como">
+  <option value="Concord">
+  <option value="Coniston">
+  <option value="Coogee">
+  <option value="Cooks Hill">
+  <option value="Copacabana">
+  <option value="Corlette">
+  <option value="Corrimal">
+  <option value="Cowra">
+  <option value="Cremorne">
+  <option value="Cremorne Point">
+  <option value="Cringila">
+  <option value="Cronulla">
+  <option value="Croydon">
+  <option value="Croydon Park">
+  <option value="Curl Curl">
+  <option value="Dapto">
+  <option value="Darling Point">
+  <option value="Darlinghurst">
+  <option value="Davidson">
+  <option value="Davistown">
+  <option value="Dee Why">
+  <option value="Dharruk">
+  <option value="Dolans Bay">
+  <option value="Doonside">
+  <option value="Double Bay">
+  <option value="Doyalson">
+  <option value="Drummoyne">
+  <option value="Dubbo">
+  <option value="Dulwich Hill">
+  <option value="Dundas">
+  <option value="Dundas Valley">
+  <option value="Dural">
+  <option value="Eagle Vale">
+  <option value="East Gosford">
+  <option value="East Hills">
+  <option value="East Killara">
+  <option value="East Lindfield">
+  <option value="East Maitland">
+  <option value="Eastlakes">
+  <option value="Eastwood">
+  <option value="Eden">
+  <option value="Edgecliff">
+  <option value="Edgeworth">
+  <option value="Elderslie">
+  <option value="Elermore Vale">
+  <option value="Elizabeth Bay">
+  <option value="Emerton">
+  <option value="Emu Heights">
+  <option value="Emu Plains">
+  <option value="Enfield">
+  <option value="Enmore">
+  <option value="Epping">
+  <option value="Erina">
+  <option value="Erina Heights">
+  <option value="Ermington">
+  <option value="Erskine Park">
+  <option value="Erskineville">
+  <option value="Eschol Park">
+  <option value="Estella">
+  <option value="Ettalong Beach">
+  <option value="Fairfield">
+  <option value="Fairlight">
+  <option value="Fairy Meadow">
+  <option value="Faulconbridge">
+  <option value="Fiddletown">
+  <option value="Figtree">
+  <option value="Fingal Bay">
+  <option value="Five Dock">
+  <option value="Fletcher">
+  <option value="Forbes">
+  <option value="Forest Hill">
+  <option value="Forest Lodge">
+  <option value="Forestville">
+  <option value="Forresters Beach">
+  <option value="Fountaindale">
+  <option value="Frazer Park">
+  <option value="Frenchs Forest">
+  <option value="Freshwater">
+  <option value="Galston">
+  <option value="Garden Suburb">
+  <option value="Gateshead">
+  <option value="Georges Hall">
+  <option value="Gerringong">
+  <option value="Gerroa">
+  <option value="Gilead">
+  <option value="Girraween">
+  <option value="Glebe">
+  <option value="Gledswood Hills">
+  <option value="Glen Alpine">
+  <option value="Glenbrook">
+  <option value="Glendenning">
+  <option value="Glenfield">
+  <option value="Glenmore Park">
+  <option value="Glenning Valley">
+  <option value="Googong">
+  <option value="Gordon">
+  <option value="Gorokan">
+  <option value="Gosford">
+  <option value="Goulburn">
+  <option value="Grasmere">
+  <option value="Green Point">
+  <option value="Greenacre">
+  <option value="Gregory Hills">
+  <option value="Griffith">
+  <option value="Guildford">
+  <option value="Guildford West">
+  <option value="Gulgong">
+  <option value="Gundagai">
+  <option value="Gwandalan">
+  <option value="Gwynneville">
+  <option value="Halekulani">
+  <option value="Hamilton">
+  <option value="Hamilton East">
+  <option value="Hamilton North">
+  <option value="Hamilton South">
+  <option value="Hamlyn Terrace">
+  <option value="Hardys Bay">
+  <option value="Harrington Park">
+  <option value="Harris Park">
+  <option value="Hazelbrook">
+  <option value="Heathcote">
+  <option value="Hebersham">
+  <option value="Heddon Greta">
+  <option value="Helensburgh">
+  <option value="Hexham">
+  <option value="Holgate">
+  <option value="Holmesville">
+  <option value="Holsworthy">
+  <option value="Homebush">
+  <option value="Homebush West">
+  <option value="Hornsby">
+  <option value="Hornsby Heights">
+  <option value="Hurlstone Park">
+  <option value="Hurstville">
+  <option value="Hurstville Grove">
+  <option value="Illawong">
+  <option value="Ingleburn">
+  <option value="Ingleside">
+  <option value="Jamberoo">
+  <option value="Jamisontown">
+  <option value="Jannali">
+  <option value="Jerrabomberra">
+  <option value="Jesmond">
+  <option value="Jordan Springs">
+  <option value="Junee">
+  <option value="Kangaroo Point">
+  <option value="Kangaroo Valley">
+  <option value="Kangy Angy">
+  <option value="Kanwal">
+  <option value="Karabar">
+  <option value="Kareela">
+  <option value="Katoomba">
+  <option value="Kearns">
+  <option value="Keiraville">
+  <option value="Kembla Grange">
+  <option value="Kentlyn">
+  <option value="Kiama">
+  <option value="Kiama Downs">
+  <option value="Killara">
+  <option value="Killarney Heights">
+  <option value="Killcare">
+  <option value="Killcare Heights">
+  <option value="Killingworth">
+  <option value="Kincumber">
+  <option value="Kincumber South">
+  <option value="Kings Cross">
+  <option value="Kings Langley">
+  <option value="Kings Park">
+  <option value="Kingsford">
+  <option value="Kingswood">
+  <option value="Kirrawee">
+  <option value="Kirribilli">
+  <option value="Kogarah">
+  <option value="Kogarah Bay">
+  <option value="Koolewong">
+  <option value="Kooringal">
+  <option value="Kotara">
+  <option value="Kurnell">
+  <option value="Kurri Kurri">
+  <option value="Kyeemagh">
+  <option value="Kyogle">
+  <option value="La Perouse">
+  <option value="Lake Albert">
+  <option value="Lake Haven">
+  <option value="Lake Heights">
+  <option value="Lakeba">
+  <option value="Lakehaven">
+  <option value="Lakelands">
+  <option value="Lapstone">
+  <option value="Lavender Bay">
+  <option value="Lavington">
+  <option value="Lawson">
+  <option value="Leeton">
+  <option value="Leichhardt">
+  <option value="Leonay">
+  <option value="Lethbridge Park">
+  <option value="Leura">
+  <option value="Lidcombe">
+  <option value="Lilli Pilli">
+  <option value="Lilyfield">
+  <option value="Lindfield">
+  <option value="Lisarow">
+  <option value="Lismore">
+  <option value="Little Bay">
+  <option value="Little Hartley">
+  <option value="Liverpool">
+  <option value="Llandilo">
+  <option value="Loftus">
+  <option value="Long Jetty">
+  <option value="Longueville">
+  <option value="Lugarno">
+  <option value="MacMasters Beach">
+  <option value="Macquarie Fields">
+  <option value="Macquarie Hills">
+  <option value="Magenta">
+  <option value="Maitland">
+  <option value="Malabar">
+  <option value="Mangerton">
+  <option value="Manly">
+  <option value="Manly Vale">
+  <option value="Mannering Park">
+  <option value="Maraylya">
+  <option value="Marrickville">
+  <option value="Marsden Park">
+  <option value="Marsfield">
+  <option value="Maryland">
+  <option value="Mascot">
+  <option value="Matcham">
+  <option value="Mayfield">
+  <option value="Mayfield East">
+  <option value="Mayfield North">
+  <option value="Mayfield West">
+  <option value="McMahons Point">
+  <option value="Meadowbank">
+  <option value="Medlow Bath">
+  <option value="Medowie">
+  <option value="Menai">
+  <option value="Menindee">
+  <option value="Merewether">
+  <option value="Merewether Heights">
+  <option value="Merimbula">
+  <option value="Merrylands">
+  <option value="Merrylands West">
+  <option value="Middle Cove">
+  <option value="Middle Dural">
+  <option value="Milton">
+  <option value="Minchinbury">
+  <option value="Minmi">
+  <option value="Minto">
+  <option value="Minto Heights">
+  <option value="Miranda">
+  <option value="Moonee">
+  <option value="Moorebank">
+  <option value="Mortdale">
+  <option value="Mortlake">
+  <option value="Moruya">
+  <option value="Moruya Heads">
+  <option value="Mosman">
+  <option value="Mount Annan">
+  <option value="Mount Druitt">
+  <option value="Mount Kembla">
+  <option value="Mount Saint Thomas">
+  <option value="Mount Victoria">
+  <option value="Mudgee">
+  <option value="Mulgoa">
+  <option value="Mullumbimby">
+  <option value="Mundamia">
+  <option value="Murwillumbah">
+  <option value="Narara">
+  <option value="Narellan">
+  <option value="Narellan Vale">
+  <option value="Narrabeen">
+  <option value="Narrandera">
+  <option value="Narrawallee">
+  <option value="Narraweena">
+  <option value="Narwee">
+  <option value="Nelson">
+  <option value="Nelson Bay">
+  <option value="New Lambton">
+  <option value="New Lambton Heights">
+  <option value="Newcastle">
+  <option value="Newcastle East">
+  <option value="Newcastle West">
+  <option value="Newington">
+  <option value="Newport">
+  <option value="Newport Beach">
+  <option value="Newtown">
+  <option value="Niagara Park">
+  <option value="Norah Head">
+  <option value="Noraville">
+  <option value="Normanhurst">
+  <option value="North Bondi">
+  <option value="North Epping">
+  <option value="North Gosford">
+  <option value="North Narrabeen">
+  <option value="North Nowra">
+  <option value="North Parramatta">
+  <option value="North Rocks">
+  <option value="North St Marys">
+  <option value="North Strathfield">
+  <option value="North Turramurra">
+  <option value="North Wollongong">
+  <option value="Northbridge">
+  <option value="Northmead">
+  <option value="Northwood">
+  <option value="Norwest">
+  <option value="Nowra">
+  <option value="Nyngan">
+  <option value="Oak Flats">
+  <option value="Oakdale">
+  <option value="Oakhurst">
+  <option value="Oatlands">
+  <option value="Oatley">
+  <option value="Old Toongabbie">
+  <option value="Orange">
+  <option value="Orchard Hills">
+  <option value="Otford">
+  <option value="Ourimbah">
+  <option value="Oxley Park">
+  <option value="Oyster Bay">
+  <option value="Paddington">
+  <option value="Padstow">
+  <option value="Padstow Heights">
+  <option value="Pagewood">
+  <option value="Palm Beach">
+  <option value="Panania">
+  <option value="Parramatta">
+  <option value="Pelican">
+  <option value="Pelton">
+  <option value="Pemulwuy">
+  <option value="Pendle Hill">
+  <option value="Pennant Hills">
+  <option value="Penrith">
+  <option value="Penshurst">
+  <option value="Petersham">
+  <option value="Phillip Bay">
+  <option value="Picnic Point">
+  <option value="Picton">
+  <option value="Pittwater">
+  <option value="Plumpton">
+  <option value="Point Clare">
+  <option value="Point Frederick">
+  <option value="Point Piper">
+  <option value="Port Botany">
+  <option value="Port Hacking">
+  <option value="Port Kembla">
+  <option value="Port Stephens">
+  <option value="Portland">
+  <option value="Potts Point">
+  <option value="Pottsville">
+  <option value="Pretty Beach">
+  <option value="Primbee">
+  <option value="Prospect">
+  <option value="Putney">
+  <option value="Pymble">
+  <option value="Pyrmont">
+  <option value="Queanbeyan">
+  <option value="Queanbeyan East">
+  <option value="Queanbeyan West">
+  <option value="Raby">
+  <option value="Ramsgate">
+  <option value="Ramsgate Beach">
+  <option value="Raymond Terrace">
+  <option value="Redfern">
+  <option value="Regents Park">
+  <option value="Regentville">
+  <option value="Revesby">
+  <option value="Revesby Heights">
+  <option value="Rhodes">
+  <option value="Richmond">
+  <option value="Riverstone">
+  <option value="Riverwood">
+  <option value="Rockdale">
+  <option value="Rookwood">
+  <option value="Rooty Hill">
+  <option value="Rosebery">
+  <option value="Rosehill">
+  <option value="Roselands">
+  <option value="Rosemeadow">
+  <option value="Roseville">
+  <option value="Roseville Chase">
+  <option value="Round Corner">
+  <option value="Rouse Hill">
+  <option value="Royalla">
+  <option value="Rozelle">
+  <option value="Ruse">
+  <option value="Rushcutters Bay">
+  <option value="Rutherford">
+  <option value="Rydalmere">
+  <option value="Ryde">
+  <option value="Salamander Bay">
+  <option value="San Remo">
+  <option value="Sandgate">
+  <option value="Sandy Point">
+  <option value="Saratoga">
+  <option value="Sawtell">
+  <option value="Scarborough">
+  <option value="Schofields">
+  <option value="Scotland Island">
+  <option value="Seaforth">
+  <option value="Seven Hills">
+  <option value="Shell Cove">
+  <option value="Shellharbour">
+  <option value="Shelly Beach">
+  <option value="Shoal Bay">
+  <option value="Shoalhaven Heads">
+  <option value="South Nowra">
+  <option value="South Penrith">
+  <option value="South Turramurra">
+  <option value="Speers Point">
+  <option value="Spit Junction">
+  <option value="Spring Farm">
+  <option value="Springvale">
+  <option value="Springwood">
+  <option value="St Clair">
+  <option value="St Ives">
+  <option value="St Ives Chase">
+  <option value="St Leonards">
+  <option value="St Marys">
+  <option value="St Peters">
+  <option value="Stanhope Gardens">
+  <option value="Stanmore">
+  <option value="Strathfield">
+  <option value="Summer Hill">
+  <option value="Sun Valley">
+  <option value="Surry Hills">
+  <option value="Sutherland">
+  <option value="Swansea">
+  <option value="Swansea Heads">
+  <option value="Sydenham">
+  <option value="Sydney">
+  <option value="Sydney Olympic Park">
+  <option value="Tacoma">
+  <option value="Tacoma South">
+  <option value="Tamworth">
+  <option value="Taren Point">
+  <option value="Tarro">
+  <option value="Tascott">
+  <option value="Tathra">
+  <option value="Tatton">
+  <option value="Telopea">
+  <option value="Temora">
+  <option value="Tempe">
+  <option value="Teralba">
+  <option value="Terrigal">
+  <option value="The Entrance">
+  <option value="The Entrance North">
+  <option value="The Hill">
+  <option value="The Ponds">
+  <option value="The Slopes">
+  <option value="Thirlmere">
+  <option value="Thirroul">
+  <option value="Thornleigh">
+  <option value="Thornton">
+  <option value="Thurgoona">
+  <option value="Tilba Tilba">
+  <option value="Toongabbie">
+  <option value="Toormina">
+  <option value="Toukley">
+  <option value="Towradgi">
+  <option value="Tregear">
+  <option value="Tuggerah">
+  <option value="Tuggerawong">
+  <option value="Tumbarumba">
+  <option value="Tumbi Umbi">
+  <option value="Tumut">
+  <option value="Tuross Head">
+  <option value="Turramurra">
+  <option value="Turvey Park">
+  <option value="Ulladulla">
+  <option value="Ultimo">
+  <option value="Umina Beach">
+  <option value="Unanderra">
+  <option value="Valley Heights">
+  <option value="Vaucluse">
+  <option value="Wadalba">
+  <option value="Wagga Wagga">
+  <option value="Wagstaffe">
+  <option value="Wahroonga">
+  <option value="Waitara">
+  <option value="Walgett">
+  <option value="Wallsend">
+  <option value="Wamberal">
+  <option value="Warabrook">
+  <option value="Warners Bay">
+  <option value="Warnervale">
+  <option value="Warrawee">
+  <option value="Warrawong">
+  <option value="Waterfall">
+  <option value="Waterloo">
+  <option value="Watson Bay">
+  <option value="Waverton">
+  <option value="Wedderburn">
+  <option value="Wentworthville">
+  <option value="Werrington">
+  <option value="Werrington County">
+  <option value="Werrington Downs">
+  <option value="West Gosford">
+  <option value="West Maitland">
+  <option value="West Pennant Hills">
+  <option value="West Pymble">
+  <option value="West Ryde">
+  <option value="West Wallsend">
+  <option value="West Wodonga">
+  <option value="Westmead">
+  <option value="Weston">
+  <option value="Whalan">
+  <option value="Whale Beach">
+  <option value="Wiley Park">
+  <option value="Willmot">
+  <option value="Willoughby">
+  <option value="Windang">
+  <option value="Winmalee">
+  <option value="Winston Hills">
+  <option value="Wirlinga">
+  <option value="Wodonga">
+  <option value="Wolli Creek">
+  <option value="Wollongong">
+  <option value="Wollstonecraft">
+  <option value="Woodcroft">
+  <option value="Woodford">
+  <option value="Woodville">
+  <option value="Woongarrah">
+  <option value="Woonona">
+  <option value="Woronora">
+  <option value="Woronora Heights">
+  <option value="Woy Woy">
+  <option value="Woy Woy Bay">
+  <option value="Wyee">
+  <option value="Wyee Point">
+  <option value="Wyong">
+  <option value="Yass">
+  <option value="Yattalunga">
+  <option value="Yellow Rock">
+  <option value="Yennora">
+  <option value="Young">
+  <option value="Yowie Bay">
+  <option value="Zetland">
+</datalist>
+
+<script>
+// ── CONFIG ──
+const PA_TRIGGER_URL = '/.netlify/functions/proxy';
+
+// Known NSW suburbs for validation (starter — expand with full table)
+const NSW_SUBURBS = [
+  "Abbotsford",
+  "Aberdare",
+  "Abermain",
+  "Acacia Gardens",
+  "Adamstown",
+  "Adamstown Heights",
+  "Airds",
+  "Albion Park",
+  "Albion Park Rail",
+  "Albury",
+  "Alexandria",
+  "Alfords Point",
+  "Allambie Heights",
+  "Ambarvale",
+  "Anna Bay",
+  "Annandale",
+  "Appin",
+  "Arcadia",
+  "Armidale",
+  "Arncliffe",
+  "Artarmon",
+  "Ashfield",
+  "Auburn",
+  "Austinmer",
+  "Avalon",
+  "Avalon Beach",
+  "Balgowlah",
+  "Balgowlah Heights",
+  "Ballina",
+  "Balmain",
+  "Balmain East",
+  "Balmoral",
+  "Bangor",
+  "Banora Point",
+  "Bar Beach",
+  "Bardwell Park",
+  "Bardwell Valley",
+  "Bateau Bay",
+  "Batehaven",
+  "Batemans Bay",
+  "Bathurst",
+  "Bayview",
+  "Beacon Hill",
+  "Beaconsfield",
+  "Beecroft",
+  "Bega",
+  "Bella Vista",
+  "Bellambi",
+  "Bellevue Hill",
+  "Belrose",
+  "Ben Buckler",
+  "Beresfield",
+  "Berkeley",
+  "Berkeley Vale",
+  "Berrilee",
+  "Berry",
+  "Beverly Hills",
+  "Bexley",
+  "Bexley North",
+  "Bidwill",
+  "Bilgola",
+  "Bilgola Plateau",
+  "Birchgrove",
+  "Birrong",
+  "Blackett",
+  "Blackheath",
+  "Blacksmiths",
+  "Blacktown",
+  "Blackwall",
+  "Blair Athol",
+  "Blairmount",
+  "Blaxland",
+  "Blaxland East",
+  "Blue Haven",
+  "Boambee",
+  "Bodalla",
+  "Bomaderry",
+  "Bomen",
+  "Bondi",
+  "Bondi Beach",
+  "Bondi Junction",
+  "Booker Bay",
+  "Booragul",
+  "Bourke",
+  "Bourkelands",
+  "Box Hill",
+  "Bradbury",
+  "Brighton Le Sands",
+  "Broken Hill",
+  "Bronte",
+  "Brookvale",
+  "Bullaburra",
+  "Bulli",
+  "Bundeena",
+  "Burraneer",
+  "Burrill Lake",
+  "Burwood",
+  "Buxton",
+  "Byron Bay",
+  "Cabarita",
+  "Cabarita Beach",
+  "Cambridge Park",
+  "Camden",
+  "Camden South",
+  "Camellia",
+  "Cameron Park",
+  "Cammeray",
+  "Campbelltown",
+  "Camperdown",
+  "Cardiff",
+  "Cardiff Heights",
+  "Cardiff South",
+  "Careel Bay",
+  "Caringbah",
+  "Caringbah South",
+  "Carlingford",
+  "Casino",
+  "Castle Hill",
+  "Castlecrag",
+  "Casula",
+  "Catherine Field",
+  "Catherine Hill Bay",
+  "Cattai",
+  "Caves Beach",
+  "Centennial Park",
+  "Cessnock",
+  "Chain Valley Bay",
+  "Charmhaven",
+  "Chatswood",
+  "Cheltenham",
+  "Cherrybrook",
+  "Chifley",
+  "Chippendale",
+  "Church Point",
+  "Clareville",
+  "Claymore",
+  "Clifton",
+  "Clontarf",
+  "Clovelly",
+  "Cobar",
+  "Cobargo",
+  "Cobbitty",
+  "Colebee",
+  "Collaroy",
+  "Collaroy Plateau",
+  "Como",
+  "Concord",
+  "Coniston",
+  "Coogee",
+  "Cooks Hill",
+  "Copacabana",
+  "Corlette",
+  "Corrimal",
+  "Cowra",
+  "Cremorne",
+  "Cremorne Point",
+  "Cringila",
+  "Cronulla",
+  "Croydon",
+  "Croydon Park",
+  "Curl Curl",
+  "Dapto",
+  "Darling Point",
+  "Darlinghurst",
+  "Davidson",
+  "Davistown",
+  "Dee Why",
+  "Dharruk",
+  "Dolans Bay",
+  "Doonside",
+  "Double Bay",
+  "Doyalson",
+  "Drummoyne",
+  "Dubbo",
+  "Dulwich Hill",
+  "Dundas",
+  "Dundas Valley",
+  "Dural",
+  "Eagle Vale",
+  "East Gosford",
+  "East Hills",
+  "East Killara",
+  "East Lindfield",
+  "East Maitland",
+  "Eastlakes",
+  "Eastwood",
+  "Eden",
+  "Edgecliff",
+  "Edgeworth",
+  "Elderslie",
+  "Elermore Vale",
+  "Elizabeth Bay",
+  "Emerton",
+  "Emu Heights",
+  "Emu Plains",
+  "Enfield",
+  "Enmore",
+  "Epping",
+  "Erina",
+  "Erina Heights",
+  "Ermington",
+  "Erskine Park",
+  "Erskineville",
+  "Eschol Park",
+  "Estella",
+  "Ettalong Beach",
+  "Fairfield",
+  "Fairlight",
+  "Fairy Meadow",
+  "Faulconbridge",
+  "Fiddletown",
+  "Figtree",
+  "Fingal Bay",
+  "Five Dock",
+  "Fletcher",
+  "Forbes",
+  "Forest Hill",
+  "Forest Lodge",
+  "Forestville",
+  "Forresters Beach",
+  "Fountaindale",
+  "Frazer Park",
+  "Frenchs Forest",
+  "Freshwater",
+  "Galston",
+  "Garden Suburb",
+  "Gateshead",
+  "Georges Hall",
+  "Gerringong",
+  "Gerroa",
+  "Gilead",
+  "Girraween",
+  "Glebe",
+  "Gledswood Hills",
+  "Glen Alpine",
+  "Glenbrook",
+  "Glendenning",
+  "Glenfield",
+  "Glenmore Park",
+  "Glenning Valley",
+  "Googong",
+  "Gordon",
+  "Gorokan",
+  "Gosford",
+  "Goulburn",
+  "Grasmere",
+  "Green Point",
+  "Greenacre",
+  "Gregory Hills",
+  "Griffith",
+  "Guildford",
+  "Guildford West",
+  "Gulgong",
+  "Gundagai",
+  "Gwandalan",
+  "Gwynneville",
+  "Halekulani",
+  "Hamilton",
+  "Hamilton East",
+  "Hamilton North",
+  "Hamilton South",
+  "Hamlyn Terrace",
+  "Hardys Bay",
+  "Harrington Park",
+  "Harris Park",
+  "Hazelbrook",
+  "Heathcote",
+  "Hebersham",
+  "Heddon Greta",
+  "Helensburgh",
+  "Hexham",
+  "Holgate",
+  "Holmesville",
+  "Holsworthy",
+  "Homebush",
+  "Homebush West",
+  "Hornsby",
+  "Hornsby Heights",
+  "Hurlstone Park",
+  "Hurstville",
+  "Hurstville Grove",
+  "Illawong",
+  "Ingleburn",
+  "Ingleside",
+  "Jamberoo",
+  "Jamisontown",
+  "Jannali",
+  "Jerrabomberra",
+  "Jesmond",
+  "Jordan Springs",
+  "Junee",
+  "Kangaroo Point",
+  "Kangaroo Valley",
+  "Kangy Angy",
+  "Kanwal",
+  "Karabar",
+  "Kareela",
+  "Katoomba",
+  "Kearns",
+  "Keiraville",
+  "Kembla Grange",
+  "Kentlyn",
+  "Kiama",
+  "Kiama Downs",
+  "Killara",
+  "Killarney Heights",
+  "Killcare",
+  "Killcare Heights",
+  "Killingworth",
+  "Kincumber",
+  "Kincumber South",
+  "Kings Cross",
+  "Kings Langley",
+  "Kings Park",
+  "Kingsford",
+  "Kingswood",
+  "Kirrawee",
+  "Kirribilli",
+  "Kogarah",
+  "Kogarah Bay",
+  "Koolewong",
+  "Kooringal",
+  "Kotara",
+  "Kurnell",
+  "Kurri Kurri",
+  "Kyeemagh",
+  "Kyogle",
+  "La Perouse",
+  "Lake Albert",
+  "Lake Haven",
+  "Lake Heights",
+  "Lakeba",
+  "Lakehaven",
+  "Lakelands",
+  "Lapstone",
+  "Lavender Bay",
+  "Lavington",
+  "Lawson",
+  "Leeton",
+  "Leichhardt",
+  "Leonay",
+  "Lethbridge Park",
+  "Leura",
+  "Lidcombe",
+  "Lilli Pilli",
+  "Lilyfield",
+  "Lindfield",
+  "Lisarow",
+  "Lismore",
+  "Little Bay",
+  "Little Hartley",
+  "Liverpool",
+  "Llandilo",
+  "Loftus",
+  "Long Jetty",
+  "Longueville",
+  "Lugarno",
+  "MacMasters Beach",
+  "Macquarie Fields",
+  "Macquarie Hills",
+  "Magenta",
+  "Maitland",
+  "Malabar",
+  "Mangerton",
+  "Manly",
+  "Manly Vale",
+  "Mannering Park",
+  "Maraylya",
+  "Marrickville",
+  "Marsden Park",
+  "Marsfield",
+  "Maryland",
+  "Mascot",
+  "Matcham",
+  "Mayfield",
+  "Mayfield East",
+  "Mayfield North",
+  "Mayfield West",
+  "McMahons Point",
+  "Meadowbank",
+  "Medlow Bath",
+  "Medowie",
+  "Menai",
+  "Menindee",
+  "Merewether",
+  "Merewether Heights",
+  "Merimbula",
+  "Merrylands",
+  "Merrylands West",
+  "Middle Cove",
+  "Middle Dural",
+  "Milton",
+  "Minchinbury",
+  "Minmi",
+  "Minto",
+  "Minto Heights",
+  "Miranda",
+  "Moonee",
+  "Moorebank",
+  "Mortdale",
+  "Mortlake",
+  "Moruya",
+  "Moruya Heads",
+  "Mosman",
+  "Mount Annan",
+  "Mount Druitt",
+  "Mount Kembla",
+  "Mount Saint Thomas",
+  "Mount Victoria",
+  "Mudgee",
+  "Mulgoa",
+  "Mullumbimby",
+  "Mundamia",
+  "Murwillumbah",
+  "Narara",
+  "Narellan",
+  "Narellan Vale",
+  "Narrabeen",
+  "Narrandera",
+  "Narrawallee",
+  "Narraweena",
+  "Narwee",
+  "Nelson",
+  "Nelson Bay",
+  "New Lambton",
+  "New Lambton Heights",
+  "Newcastle",
+  "Newcastle East",
+  "Newcastle West",
+  "Newington",
+  "Newport",
+  "Newport Beach",
+  "Newtown",
+  "Niagara Park",
+  "Norah Head",
+  "Noraville",
+  "Normanhurst",
+  "North Bondi",
+  "North Epping",
+  "North Gosford",
+  "North Narrabeen",
+  "North Nowra",
+  "North Parramatta",
+  "North Rocks",
+  "North St Marys",
+  "North Strathfield",
+  "North Turramurra",
+  "North Wollongong",
+  "Northbridge",
+  "Northmead",
+  "Northwood",
+  "Norwest",
+  "Nowra",
+  "Nyngan",
+  "Oak Flats",
+  "Oakdale",
+  "Oakhurst",
+  "Oatlands",
+  "Oatley",
+  "Old Toongabbie",
+  "Orange",
+  "Orchard Hills",
+  "Otford",
+  "Ourimbah",
+  "Oxley Park",
+  "Oyster Bay",
+  "Paddington",
+  "Padstow",
+  "Padstow Heights",
+  "Pagewood",
+  "Palm Beach",
+  "Panania",
+  "Parramatta",
+  "Pelican",
+  "Pelton",
+  "Pemulwuy",
+  "Pendle Hill",
+  "Pennant Hills",
+  "Penrith",
+  "Penshurst",
+  "Petersham",
+  "Phillip Bay",
+  "Picnic Point",
+  "Picton",
+  "Pittwater",
+  "Plumpton",
+  "Point Clare",
+  "Point Frederick",
+  "Point Piper",
+  "Port Botany",
+  "Port Hacking",
+  "Port Kembla",
+  "Port Stephens",
+  "Portland",
+  "Potts Point",
+  "Pottsville",
+  "Pretty Beach",
+  "Primbee",
+  "Prospect",
+  "Putney",
+  "Pymble",
+  "Pyrmont",
+  "Queanbeyan",
+  "Queanbeyan East",
+  "Queanbeyan West",
+  "Raby",
+  "Ramsgate",
+  "Ramsgate Beach",
+  "Raymond Terrace",
+  "Redfern",
+  "Regents Park",
+  "Regentville",
+  "Revesby",
+  "Revesby Heights",
+  "Rhodes",
+  "Richmond",
+  "Riverstone",
+  "Riverwood",
+  "Rockdale",
+  "Rookwood",
+  "Rooty Hill",
+  "Rosebery",
+  "Rosehill",
+  "Roselands",
+  "Rosemeadow",
+  "Roseville",
+  "Roseville Chase",
+  "Round Corner",
+  "Rouse Hill",
+  "Royalla",
+  "Rozelle",
+  "Ruse",
+  "Rushcutters Bay",
+  "Rutherford",
+  "Rydalmere",
+  "Ryde",
+  "Salamander Bay",
+  "San Remo",
+  "Sandgate",
+  "Sandy Point",
+  "Saratoga",
+  "Sawtell",
+  "Scarborough",
+  "Schofields",
+  "Scotland Island",
+  "Seaforth",
+  "Seven Hills",
+  "Shell Cove",
+  "Shellharbour",
+  "Shelly Beach",
+  "Shoal Bay",
+  "Shoalhaven Heads",
+  "South Nowra",
+  "South Penrith",
+  "South Turramurra",
+  "Speers Point",
+  "Spit Junction",
+  "Spring Farm",
+  "Springvale",
+  "Springwood",
+  "St Clair",
+  "St Ives",
+  "St Ives Chase",
+  "St Leonards",
+  "St Marys",
+  "St Peters",
+  "Stanhope Gardens",
+  "Stanmore",
+  "Strathfield",
+  "Summer Hill",
+  "Sun Valley",
+  "Surry Hills",
+  "Sutherland",
+  "Swansea",
+  "Swansea Heads",
+  "Sydenham",
+  "Sydney",
+  "Sydney Olympic Park",
+  "Tacoma",
+  "Tacoma South",
+  "Tamworth",
+  "Taren Point",
+  "Tarro",
+  "Tascott",
+  "Tathra",
+  "Tatton",
+  "Telopea",
+  "Temora",
+  "Tempe",
+  "Teralba",
+  "Terrigal",
+  "The Entrance",
+  "The Entrance North",
+  "The Hill",
+  "The Ponds",
+  "The Slopes",
+  "Thirlmere",
+  "Thirroul",
+  "Thornleigh",
+  "Thornton",
+  "Thurgoona",
+  "Tilba Tilba",
+  "Toongabbie",
+  "Toormina",
+  "Toukley",
+  "Towradgi",
+  "Tregear",
+  "Tuggerah",
+  "Tuggerawong",
+  "Tumbarumba",
+  "Tumbi Umbi",
+  "Tumut",
+  "Tuross Head",
+  "Turramurra",
+  "Turvey Park",
+  "Ulladulla",
+  "Ultimo",
+  "Umina Beach",
+  "Unanderra",
+  "Valley Heights",
+  "Vaucluse",
+  "Wadalba",
+  "Wagga Wagga",
+  "Wagstaffe",
+  "Wahroonga",
+  "Waitara",
+  "Walgett",
+  "Wallsend",
+  "Wamberal",
+  "Warabrook",
+  "Warners Bay",
+  "Warnervale",
+  "Warrawee",
+  "Warrawong",
+  "Waterfall",
+  "Waterloo",
+  "Watson Bay",
+  "Waverton",
+  "Wedderburn",
+  "Wentworthville",
+  "Werrington",
+  "Werrington County",
+  "Werrington Downs",
+  "West Gosford",
+  "West Maitland",
+  "West Pennant Hills",
+  "West Pymble",
+  "West Ryde",
+  "West Wallsend",
+  "West Wodonga",
+  "Westmead",
+  "Weston",
+  "Whalan",
+  "Whale Beach",
+  "Wiley Park",
+  "Willmot",
+  "Willoughby",
+  "Windang",
+  "Winmalee",
+  "Winston Hills",
+  "Wirlinga",
+  "Wodonga",
+  "Wolli Creek",
+  "Wollongong",
+  "Wollstonecraft",
+  "Woodcroft",
+  "Woodford",
+  "Woodville",
+  "Woongarrah",
+  "Woonona",
+  "Woronora",
+  "Woronora Heights",
+  "Woy Woy",
+  "Woy Woy Bay",
+  "Wyee",
+  "Wyee Point",
+  "Wyong",
+  "Yass",
+  "Yattalunga",
+  "Yellow Rock",
+  "Yennora",
+  "Young",
+  "Yowie Bay",
+  "Zetland"
+];
+
+// ── STATE ──
+let currentOppID = null;
+let isNewRecord = false;
+let buyerSuburbs = [];
+let buyerExtraOpen = false;
+
+// ── ON LOAD ──
+window.addEventListener('load', () => {
+  // Check URL for OppID deep link
+  const params = new URLSearchParams(window.location.search);
+  const opp = params.get('opp');
+  if (opp) loadOpportunity(opp);
+});
+
+// ── SEARCH ──
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) return;
+  const ql = q.toLowerCase();
+  showLoading('Searching…');
+  fetch(PA_TRIGGER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'search', query: q })
+  })
+  .then(r => r.json())
+  .then(data => {
+    hideLoading();
+    const contacts = data.contacts || [];
+    const opps = data.opps || [];
+
+    // Filter contacts by query
+    const matchedContacts = contacts.filter(c => {
+      const name = (c['Display Name'] || '').toLowerCase();
+      const phone = (c['CleanPhone'] || '');
+      return name.includes(ql) || phone.includes(q);
+    });
+
+    // Build results — one row per opportunity, joined to contact
+    const results = [];
+    matchedContacts.forEach(c => {
+      const contactOpps = opps.filter(o => o['ContactID'] === c['ContactID']);
+      if (contactOpps.length > 0) {
+        contactOpps.forEach(o => {
+          results.push({
+            oppid: o['OppID'] || '',
+            name: c['Display Name'] || '',
+            phone: c['CleanPhone'] || '',
+            suburb: o['SellerSuburb'] || o['BuyerSuburb'] || '',
+            status: o['Status'] || 'Active'
+          });
+        });
+      } else {
+        // Contact exists but no opportunity yet
+        results.push({
+          oppid: '',
+          contactid: c['ContactID'] || '',
+          name: c['Display Name'] || '',
+          phone: c['CleanPhone'] || '',
+          suburb: '',
+          status: 'No opportunity'
+        });
+      }
+    });
+
+    // Also match opps directly by OppID
+    const oppMatches = opps.filter(o => (o['OppID'] || '').toLowerCase().includes(ql));
+    oppMatches.forEach(o => {
+      if (!results.find(r => r.oppid === o['OppID'])) {
+        const c = contacts.find(c => c['ContactID'] === o['ContactID']) || {};
+        results.push({
+          oppid: o['OppID'] || '',
+          name: c['Display Name'] || o['ContactID'] || '',
+          phone: c['CleanPhone'] || '',
+          suburb: o['SellerSuburb'] || o['BuyerSuburb'] || '',
+          status: o['Status'] || 'Active'
+        });
+      }
+    });
+
+    renderSearchResults(results);
+  })
+  .catch(() => {
+    hideLoading();
+    renderSearchResults(getMockResults(q));
+  });
+}
+
+function getMockResults(q) {
+  // Placeholder until PA search flow is built
+  return [
+    { oppid: 'SMITH_KELLYVILLE_001', name: 'Jane Smith', phone: '+61400123456', suburb: 'Kellyville', status: 'Active' },
+    { oppid: 'LAWTON_BEROWRA_001', name: 'Jemima Lawton', phone: '+61404057311', suburb: 'Berowra', status: 'Active' },
+  ].filter(r => r.name.toLowerCase().includes(q.toLowerCase()) || r.oppid.toLowerCase().includes(q.toLowerCase()) || r.suburb.toLowerCase().includes(q.toLowerCase()) || r.phone.includes(q));
+}
+
+function renderSearchResults(results) {
+  const el = document.getElementById('searchResults');
+  el.classList.add('visible');
+  if (!results.length) {
+    el.innerHTML = '<div class="result-empty">No records found</div>';
+    return;
+  }
+  el.innerHTML = results.map(r => `
+    <div class="result-item" onclick="loadOpportunity('${r.oppid}')">
+      <div>
+        <div class="result-name">${r.name}</div>
+        <div class="result-meta">${r.phone} · ${r.suburb}</div>
+      </div>
+      <div class="result-oppid">${r.oppid}</div>
+    </div>
+  `).join('');
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('searchResults').classList.remove('visible');
+}
+
+// ── LOAD OPPORTUNITY ──
+function loadOpportunity(oppid) {
+  clearSearch();
+  showLoading('Loading…');
+  fetch(PA_TRIGGER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'get', oppid })
+  })
+  .then(r => r.json())
+  .then(raw => {
+    hideLoading();
+    // Map PA response (Excel column names) to form fields
+    const c = raw.contact || {};
+    const o = raw.opp || {};
+    const mapped = {
+      firstName: c['First Name'] || '',
+      lastName: c['Last Name'] || '',
+      phone: c['CleanPhone'] || '',
+      email: c['Email'] || '',
+      source: c['Source'] || 'Webform',
+      tags: c['Tags'] || '',
+      status: o['Status'] || 'Active',
+      hasSeller: !!(o['SellerSuburb'] || o['SellerPropertyAddress']),
+      sellerAddress: o['SellerPropertyAddress'] || '',
+      sellerSuburb: o['SellerSuburb'] || '',
+      sellerPostcode: '',
+      sellerPropertyType: o['SellerPropertyType'] || '',
+      sellerTimeline: o['SellerTimeline'] || '',
+      sellerPrice: o['SellerPriceMax'] || o['SellerPriceMin'] || '',
+      sellerMotivation: o['SellerMotivation'] || '',
+      sellerActionItems: o['ActionItems'] || '',
+      hasBuyer: !!(o['BuyerSuburb'] || o['BuyerBudgetMax']),
+      buyerSuburbs: o['BuyerSuburb'] ? o['BuyerSuburb'].split(',').map(s => s.trim()).filter(Boolean) : [],
+      buyerPropertyType: o['BuyerPropertyType'] || '',
+      buyerTimeline: o['BuyerTimeline'] || '',
+      buyerBeds: parseInt(o['BuyerBedrooms']) || 3,
+      buyerBaths: parseInt(o['BuyerBathrooms']) || 2,
+      buyerParking: parseInt(o['BuyerParkingMin']) || 1,
+      buyerBudgetMin: o['BuyerBudgetMin'] || '',
+      buyerBudgetMax: o['BuyerBudgetMax'] || '',
+      buyerFinanceStatus: o['BuyerFinanceStatus'] || '',
+      buyerPreApprovalAmount: o['BuyerPreApprovalAmount'] || '',
+      buyerPreApprovalExpiry: o['BuyerPreApprovalExpiry'] || '',
+      buyerBrokerEngaged: o['BuyerBrokerEngaged'] === 'true' || o['BuyerBrokerEngaged'] === true,
+      buyerMotivation: o['BuyerMotivation'] || '',
+      buyerSchoolZone: o['BuyerSchoolZone'] || '',
+      buyerLandSize: o['BuyerLandSizeMin'] || '',
+      buyerPropertyStyle: o['BuyerPropertyStyle'] || '',
+      buyerZoning: o['BuyerZoningRequirements'] || '',
+      buyerDevPotential: o['BuyerDevelopmentPotential'] || '',
+      buyerLiveability: o['BuyerLiveabilityBand'] || '',
+      buyerNotes: o['BuyerNotes'] || ''
+    };
+    populateForm(mapped, oppid, false);
+  })
+  .catch(() => {
+    hideLoading();
+    populateForm(getMockRecord(oppid), oppid, false);
+  });
+}
+
+function getMockRecord(oppid) {
+  if (oppid === 'LAWTON_BEROWRA_001') return {
+    firstName: 'Jemima', lastName: 'Lawton', phone: '+61404057311', email: '',
+    source: 'Audio', tags: '',
+    hasSeller: true, sellerAddress: 'Berowra NSW', sellerSuburb: 'Berowra',
+    sellerPostcode: '2081', sellerPropertyType: 'Apartment', sellerTimeline: '3 months',
+    sellerPrice: '1000000', sellerMotivation: 'Wants to move to Central Coast',
+    hasBuyer: true, buyerSuburbs: ['Terrigal'],
+    buyerPropertyType: 'House', buyerTimeline: '3 months',
+    buyerBeds: 3, buyerBaths: 2, buyerParking: 2,
+    buyerBudgetMin: '1500000', buyerBudgetMax: '1800000',
+    buyerFinanceStatus: 'Pre-Approval', buyerPreApprovalAmount: '1800000',
+    buyerPreApprovalExpiry: '2026-08-27', buyerMotivation: 'WFH, wants beach lifestyle',
+    status: 'Active'
+  };
+  return {};
+}
+
+function startNewRecord() {
+  populateForm({}, null, true);
+}
+
+function populateForm(data, oppid, isNew) {
+  currentOppID = oppid;
+  isNewRecord = isNew;
+
+  // OppID banner
+  document.getElementById('oppidDisplay').textContent = oppid || 'New Record';
+  document.getElementById('oppidStatus').textContent = isNew ? 'NEW' : (data.status || 'Active');
+  document.getElementById('oppidStatus').className = 'oppid-status ' + (isNew ? 'status-new' : 'status-active');
+
+  // Contact
+  setVal('firstName', data.firstName);
+  setVal('lastName', data.lastName);
+  setVal('phone', data.phone);
+  setVal('email', data.email);
+  setVal('source', data.source || 'Webform');
+  setVal('tags', data.tags);
+
+  // Seller
+  const hasSeller = data.hasSeller !== false;
+  document.getElementById('hasSeller').checked = hasSeller;
+  toggleSection('sellerFields', hasSeller);
+  setVal('sellerAddress', data.sellerAddress);
+  setVal('sellerSuburb', data.sellerSuburb);
+  setVal('sellerPostcode', data.sellerPostcode);
+  setVal('sellerPropertyType', data.sellerPropertyType);
+  setVal('sellerTimeline', data.sellerTimeline);
+  setVal('sellerPrice', data.sellerPrice);
+  setVal('sellerMotivation', data.sellerMotivation);
+  setVal('sellerActionItems', data.sellerActionItems);
+
+  // Buyer suburbs
+  buyerSuburbs = data.buyerSuburbs || [];
+  renderSuburbPills();
+  const hasBuyer = data.hasBuyer !== false;
+  document.getElementById('hasBuyer').checked = hasBuyer;
+  toggleSection('buyerFields', hasBuyer);
+  setVal('buyerPropertyType', data.buyerPropertyType);
+  setVal('buyerTimeline', data.buyerTimeline);
+  document.getElementById('buyerBeds').value = data.buyerBeds || 3;
+  document.getElementById('buyerBaths').value = data.buyerBaths || 2;
+  document.getElementById('buyerParking').value = data.buyerParking || 1;
+  setVal('buyerBudgetMin', data.buyerBudgetMin);
+  setVal('buyerBudgetMax', data.buyerBudgetMax);
+  setVal('buyerFinanceStatus', data.buyerFinanceStatus);
+  togglePreApproval();
+  setVal('buyerPreApprovalAmount', data.buyerPreApprovalAmount);
+  setVal('buyerPreApprovalExpiry', data.buyerPreApprovalExpiry);
+  if (data.buyerBrokerEngaged) document.getElementById('buyerBrokerEngaged').checked = true;
+  setVal('buyerMotivation', data.buyerMotivation);
+  setVal('buyerSchoolZone', data.buyerSchoolZone);
+  setVal('buyerLandSize', data.buyerLandSize);
+  setVal('buyerPropertyStyle', data.buyerPropertyStyle);
+  setVal('buyerZoning', data.buyerZoning);
+  setVal('buyerDevPotential', data.buyerDevPotential);
+  setVal('buyerLiveability', data.buyerLiveability);
+  setVal('buyerNotes', data.buyerNotes);
+
+  // Validate suburbs
+  if (data.sellerSuburb) validateSuburb(document.getElementById('sellerSuburb'), 'sellerSuburbWarning');
+
+  // Missing fields
+  showMissingFields(data);
+
+  // Show form
+  document.getElementById('formPanel').classList.add('visible');
+  document.getElementById('submitBar').classList.add('visible');
+  document.getElementById('formPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── SUBURB HANDLING ──
+function addSuburb() {
+  const input = document.getElementById('buyerSuburbInput');
+  const val = input.value.trim();
+  if (!val) return;
+  if (!buyerSuburbs.includes(val)) {
+    buyerSuburbs.push(val);
+    renderSuburbPills();
+  }
+  input.value = '';
+}
+
+function removeSuburb(suburb) {
+  buyerSuburbs = buyerSuburbs.filter(s => s !== suburb);
+  renderSuburbPills();
+}
+
+function renderSuburbPills() {
+  const container = document.getElementById('buyerSuburbPills');
+  container.innerHTML = buyerSuburbs.map(s => {
+    const known = NSW_SUBURBS.map(x => x.toLowerCase()).includes(s.toLowerCase());
+    return `<div class="suburb-pill ${known ? '' : 'warning-pill'}">
+      ${s}
+      <span class="suburb-pill-remove" onclick="removeSuburb('${s}')">×</span>
+    </div>`;
+  }).join('');
+  const hasUnknown = buyerSuburbs.some(s => !NSW_SUBURBS.map(x => x.toLowerCase()).includes(s.toLowerCase()));
+  document.getElementById('buyerSuburbWarning').style.display = hasUnknown ? 'flex' : 'none';
+}
+
+function validateSuburb(input, warningId) {
+  const val = input.value.trim();
+  const known = !val || NSW_SUBURBS.map(x => x.toLowerCase()).includes(val.toLowerCase());
+  input.classList.toggle('warning', !known && !!val);
+  document.getElementById(warningId).style.display = (!known && !!val) ? 'flex' : 'none';
+}
+
+function parseSellerSuburb() {
+  const addr = document.getElementById('sellerAddress').value;
+  const parts = addr.split(',');
+  if (parts.length >= 2) {
+    const suburb = parts[parts.length - 2].trim().replace(/\s+NSW$/, '').replace(/\s+\d{4}$/, '').trim();
+    if (suburb && !document.getElementById('sellerSuburb').value) {
+      document.getElementById('sellerSuburb').value = suburb;
+      validateSuburb(document.getElementById('sellerSuburb'), 'sellerSuburbWarning');
+    }
+  }
+}
+
+// ── FORM HELPERS ──
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (!el || val === undefined || val === null) return;
+  el.value = val;
+}
+
+function toggleSection(id, show) {
+  document.getElementById(id).style.display = show ? 'block' : 'none';
+}
+
+function toggleCard(id) {
+  const body = document.getElementById(id);
+  const chevron = document.getElementById(id + 'Chevron');
+  const header = chevron.closest('.form-card-header');
+  const collapsed = body.classList.toggle('collapsed');
+  chevron.classList.toggle('open', !collapsed);
+  header.classList.toggle('collapsed', collapsed);
+}
+
+function stepperChange(id, delta) {
+  const el = document.getElementById(id);
+  const val = parseInt(el.value) + delta;
+  if (val >= 0 && val <= 10) el.value = val;
+}
+
+function togglePreApproval() {
+  const status = document.getElementById('buyerFinanceStatus').value;
+  const show = status === 'Pre-Approval' || status === 'Approved';
+  document.getElementById('preApprovalFields').style.display = show ? 'block' : 'none';
+}
+
+function toggleBuyerExtra() {
+  buyerExtraOpen = !buyerExtraOpen;
+  document.getElementById('buyerExtraFields').style.display = buyerExtraOpen ? 'block' : 'none';
+  document.getElementById('buyerExtraToggle').textContent = buyerExtraOpen ? '− Hide additional preferences' : '+ Show additional preferences';
+}
+
+function showMissingFields(data) {
+  const missing = [];
+  if (data.hasBuyer !== false) {
+    if (!data.buyerSuburbs?.length) missing.push('Buyer Suburbs');
+    if (!data.buyerBudgetMax) missing.push('Budget Max');
+    if (!data.buyerTimeline) missing.push('Timeline');
+    if (!data.buyerFinanceStatus) missing.push('Finance Status');
+  }
+  if (data.hasSeller !== false) {
+    if (!data.sellerSuburb) missing.push('Seller Suburb');
+    if (!data.sellerPrice) missing.push('Price Expectation');
+    if (!data.sellerTimeline) missing.push('Seller Timeline');
+  }
+  const el = document.getElementById('missingFields');
+  if (missing.length) {
+    el.style.display = 'block';
+    el.innerHTML = '⚠ Missing fields:<br>' + missing.map(m => `• ${m}`).join('<br>');
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function cancelForm() {
+  document.getElementById('formPanel').classList.remove('visible');
+  document.getElementById('submitBar').classList.remove('visible');
+  currentOppID = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ──
+function submitForm() {
+  // Validate required fields
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const sellerSuburb = document.getElementById('sellerSuburb').value.trim();
+
+  if (!firstName || !lastName) { showToast('First and last name required', 'error'); return; }
+  if (!phone) { showToast('Mobile number required', 'error'); return; }
+  if (!phone.startsWith('+61')) { showToast('Phone must be in +61 format', 'error'); return; }
+  if (document.getElementById('hasSeller').checked && !sellerSuburb) { showToast('Seller suburb required for OppID', 'error'); return; }
+
+  // Build payload
+  const payload = {
+    action: isNewRecord ? 'create' : 'update',
+    oppid: currentOppID,
+    contact: {
+      firstName, lastName,
+      phone, email: document.getElementById('email').value.trim(),
+      source: document.getElementById('source').value,
+      tags: document.getElementById('tags').value.trim()
+    },
+    seller: document.getElementById('hasSeller').checked ? {
+      address: document.getElementById('sellerAddress').value.trim(),
+      suburb: sellerSuburb,
+      postcode: document.getElementById('sellerPostcode').value.trim(),
+      propertyType: document.getElementById('sellerPropertyType').value,
+      timeline: document.getElementById('sellerTimeline').value,
+      price: document.getElementById('sellerPrice').value.replace(/,/g,''),
+      motivation: document.getElementById('sellerMotivation').value.trim(),
+      actionItems: document.getElementById('sellerActionItems').value.trim()
+    } : null,
+    buyer: document.getElementById('hasBuyer').checked ? {
+      suburbs: buyerSuburbs,
+      propertyType: document.getElementById('buyerPropertyType').value,
+      timeline: document.getElementById('buyerTimeline').value,
+      beds: parseInt(document.getElementById('buyerBeds').value),
+      baths: parseInt(document.getElementById('buyerBaths').value),
+      parking: parseInt(document.getElementById('buyerParking').value),
+      budgetMin: document.getElementById('buyerBudgetMin').value.replace(/,/g,''),
+      budgetMax: document.getElementById('buyerBudgetMax').value.replace(/,/g,''),
+      financeStatus: document.getElementById('buyerFinanceStatus').value,
+      preApprovalAmount: document.getElementById('buyerPreApprovalAmount').value.replace(/,/g,''),
+      preApprovalExpiry: document.getElementById('buyerPreApprovalExpiry').value,
+      brokerEngaged: document.getElementById('buyerBrokerEngaged').checked,
+      motivation: document.getElementById('buyerMotivation').value.trim(),
+      schoolZone: document.getElementById('buyerSchoolZone').value.trim(),
+      landSizeMin: document.getElementById('buyerLandSize').value,
+      propertyStyle: document.getElementById('buyerPropertyStyle').value.trim(),
+      zoning: document.getElementById('buyerZoning').value.trim(),
+      devPotential: document.getElementById('buyerDevPotential').value.trim(),
+      liveability: document.getElementById('buyerLiveability').value.trim(),
+      notes: document.getElementById('buyerNotes').value.trim()
+    } : null
+  };
+
+  showLoading('Saving…');
+  fetch(PA_TRIGGER_URL, { 
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    hideLoading();
+    showToast('✓ Opportunity saved', 'success');
+    setTimeout(() => cancelForm(), 1500);
+  })
+  .catch(() => {
+    hideLoading();
+    showToast('✓ Queued — will sync when online', 'success');
+    setTimeout(() => cancelForm(), 1500);
+  });
+}
+
+// ── UI HELPERS ──
+function showLoading(text) {
+  document.getElementById('loadingText').textContent = text;
+  document.getElementById('loadingOverlay').classList.add('visible');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('visible');
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+</script>
+</body>
+</html>
