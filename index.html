@@ -1037,7 +1037,7 @@ function loadOpportunity(oppid) {
       buyerZoning: o['BuyerZoningRequirements'] || '',
       buyerDevPotential: o['BuyerDevelopmentPotential'] || '',
       buyerLiveability: o['BuyerLiveabilityBand'] || '',
-      buyerNotes: ''
+      buyerNotes: o['BuyerNotes'] || ''
     };
     populateForm(mapped, oppid, false);
   })
