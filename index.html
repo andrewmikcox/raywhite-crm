@@ -2899,12 +2899,21 @@ function submitForm() {
   // Validate required fields
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
-  const phone = document.getElementById('phone').value.trim();
   const sellerSuburb = document.getElementById('sellerSuburb').value.trim();
 
+  // Normalise phone (handles paste from Contacts, spaces, dashes, brackets, missing +)
+  let phone = document.getElementById('phone').value.trim();
+  phone = phone.replace(/[\s\-\(\)]/g, '');
+  if (phone.startsWith('+610')) phone = '+61' + phone.slice(4);
+  else if (phone.startsWith('610')) phone = '+61' + phone.slice(3);
+  else if (phone.startsWith('61')) phone = '+' + phone;
+  else if (phone.startsWith('0')) phone = '+61' + phone.slice(1);
+  else if (!phone.startsWith('+61')) phone = '+61' + phone;
+  document.getElementById('phone').value = phone; // reflect cleaned value back into the field
+
   if (!firstName || !lastName) { showToast('First and last name required', 'error'); return; }
-  if (!phone) { showToast('Mobile number required', 'error'); return; }
-  if (!phone.startsWith('+61')) { showToast('Phone must be in +61 format', 'error'); return; }
+  if (!phone || phone === '+61') { showToast('Mobile number required', 'error'); return; }
+  if (!/^\+61\d{9}$/.test(phone)) { showToast('Phone must be a valid Australian mobile number', 'error'); return; }
   if (document.getElementById('hasSeller').checked && !sellerSuburb) { showToast('Seller suburb required for OppID', 'error'); return; }
 
   // Build payload
